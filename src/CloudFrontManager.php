@@ -30,40 +30,31 @@ class CloudFrontManager extends Manager
     {
         $this->ensureAwsSdkIsInstalled();
 
-        $config = $this->config['cloudfront'];
-
-        $credentials = $this->getCredentials($config['credentials']);
-
-        $client = $this->setCloudFrontClient($config, $credentials);
+        $client = $this->setCloudFrontClient();
 
         return new CloudFront($client);
     }
 
     /**
      * Sets the polly client.
-     *
-     * @param array $config
-     * @param Credentials $credentials
-     * @return \Aws\CloudFront\CloudFrontClient
      */
-    protected function setCloudFrontClient(array $config, Credentials $credentials): CloudFrontClient
+    protected function setCloudFrontClient(): CloudFrontClient
     {
-        return new CloudFrontClient([
-            'version' => $config['version'],
-            'region' => $config['region'],
-            'credentials' => $credentials,
-        ]);
-    }
+        $args = [
+            'version' => config('cloudfront.version'),
+            'region' => config('cloudfront.region'),
+        ];
 
-    /**
-     * Get credentials of AWS.
-     *
-     * @param array $credentials
-     * @return \Aws\Credentials\Credentials
-     */
-    protected function getCredentials(array $credentials): Credentials
-    {
-        return new Credentials($credentials['key'], $credentials['secret']);
+        if (config('cloudfront.credentials')
+            && config('cloudfront.credentials.key')
+            && config('cloudfront.credentials.secret')
+        ) {
+            $credentials = new Credentials(config('cloudfront.credentials.key'), config('cloudfront.credentials.secret'));
+
+            $args['credentials'] = $credentials;
+        }
+
+        return new CloudFrontClient($args);
     }
 
     /**

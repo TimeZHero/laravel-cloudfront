@@ -10,26 +10,15 @@ use Meema\CloudFront\Contracts\CloudFront as CloudFrontInterface;
 class CloudFront implements CloudFrontInterface
 {
     /**
-     * Client instance of CloudFront.
-     *
-     * @var \Aws\CloudFront\CloudFrontClient
-     */
-    protected CloudFrontClient $client;
-
-    /**
      * Construct converter.
      *
      * @param \Aws\CloudFront\CloudFrontClient $client
      */
-    public function __construct(CloudFrontClient $client)
-    {
-        $config = config('cloudfront');
-
-        $this->client = new $client([
-            'version' => $config['version'],
-            'region' => $config['region'],
-            'credentials' => new Credentials($config['credentials']['key'], $config['credentials']['secret']),
-        ]);
+    public function __construct(
+        /** Client instance of CloudFront. */
+        protected CloudFrontClient $client
+    ) {
+        //
     }
 
     /**
