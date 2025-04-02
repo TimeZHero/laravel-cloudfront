@@ -40,21 +40,10 @@ class CloudFrontManager extends Manager
      */
     protected function setCloudFrontClient(): CloudFrontClient
     {
-        $args = [
+        return new CloudFrontClient([
             'version' => config('cloudfront.version'),
             'region' => config('cloudfront.region'),
-        ];
-
-        if (config('cloudfront.credentials')
-            && config('cloudfront.credentials.key')
-            && config('cloudfront.credentials.secret')
-        ) {
-            $credentials = new Credentials(config('cloudfront.credentials.key'), config('cloudfront.credentials.secret'));
-
-            $args['credentials'] = $credentials;
-        }
-
-        return new CloudFrontClient($args);
+        ]);
     }
 
     /**
